@@ -17,9 +17,8 @@ const App = (props) => {
 
   let routes = (
     <Routes>
-      <Route path="/" exact element={<Login />} />
-      <Route path="/logout" render={props => <Logout {...props} />} />
-      <Route path="*" element={<Login />} />
+      <Route path="/" element={<Login />} />
+      <Route path="*" element={<Navigate replace to="/" />} />
     </Routes>
   );
 
