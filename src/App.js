@@ -1,25 +1,50 @@
-import logo from './logo.svg';
+import React, { useEffect, Suspense } from 'react';
+import { Route, Routes, Navigate } from 'react-router-dom';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
-function App() {
+import Login from './containers/Login/Login';
+import Logout from './containers/Logout/Logout';
+import withRouter from './HOC/withRouter/withRouter';
+
+const App = (props) => {
+
+  useEffect(() => {
+    console.log(props);
+    // props.onTryAutoSignup();
+  }, []);
+
+  let routes = (
+    <Routes>
+      <Route path="/" exact element={<Login />} />
+      <Route path="/logout" render={props => <Logout {...props} />} />
+      <Route path="*" element={<Login />} />
+    </Routes>
+  );
+
+  if (props.isAuthenticated) {
+    routes = (
+      <Routes>
+        {/* <Route path="/checkout" render={props => <Checkout {...props} />} />
+        <Route path="/orders" render={props => <Orders {...props} />} />
+        <Route path="/logout" component={Logout} />
+        <Route path="/auth" render={props => <Auth {...props} />} />
+        <Route path="/" exact component={BurgerBuilder} /> */}
+        {/* <Redirect to="/" /> */}
+      </Routes>
+    );
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {routes}
+      {/* <Suspense fallback={<p>Loading...</p>}>{routes}</Suspense> */}
+      {/* <Layout>
+        <Suspense fallback={<p>Loading...</p>}>{routes}</Suspense>
+      </Layout> */}
     </div>
   );
 }
 
-export default App;
+export default withRouter(App);
