@@ -5,15 +5,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 import Login from './containers/Login/Login';
-import Logout from './containers/Logout/Logout';
 import withRouter from './HOC/withRouter/withRouter';
 
 const App = (props) => {
-
-  useEffect(() => {
-    console.log(props);
-    // props.onTryAutoSignup();
-  }, []);
 
   let routes = (
     <Routes>
