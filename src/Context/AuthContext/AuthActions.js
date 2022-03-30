@@ -1,3 +1,8 @@
+export const changeTheme = (theme) => ({
+    type: "THEME_CHANGE",
+    payload: theme
+});
+
 export const loginStart = () => ({
     type: "LOGIN_START",
 });
@@ -10,6 +15,6 @@ export const loginFailure = () => ({
 });
 
 //logout
-export const logout = () => ({
+export const logOut = () => ({
     type: "LOGOUT",
 });

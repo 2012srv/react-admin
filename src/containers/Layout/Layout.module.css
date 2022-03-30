@@ -1,0 +1,8 @@
+.Main{
+    padding-top: 50px;
+    transition: all 0.2s linear;
+    padding-left: 230px;
+}
+.Collapsed{
+    padding-left: 60px;
+}

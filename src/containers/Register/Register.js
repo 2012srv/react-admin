@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import InputGroup from 'react-bootstrap/InputGroup'
 import Button from 'react-bootstrap/Button';
@@ -7,26 +7,25 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 
 import { axiosAuth } from '../../hoc/withErrorHandler';
-import * as api from '../../context/authContext/apiCalls';
-import { AuthContext } from '../../context/authContext/AuthContext';
 
-// import withErrorHandler from '../../hoc/withErrorHandler';
-
-const Login = (props) => {
-    const { dispatch, error, isFetching } = useContext(AuthContext);
+const Register = () => {
     const schema = yup.object().shape({
+        name: yup.string().required(),
         email: yup.string().email().required(),
         password: yup.string().required(),
-        // terms: yup.bool().required().oneOf([true], "term must be accepted"),
+        passwordConfirmation: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match'),
+        terms: yup.bool().required().oneOf([true], "term must be accepted"),
     });
+
     useEffect(() => {
 
     }, []);
 
-    console.log('login');
+    console.log('register');
+
     // const handleSubmit = ()
 
     return (
@@ -34,20 +33,41 @@ const Login = (props) => {
             <Formik
                 validationSchema={schema}
                 onSubmit={(values, { setSubmitting }) => {
-                    api.login(values, dispatch, axiosAuth);
-                    // setTimeout(() => {
-                    //     alert(JSON.stringify(values, null, 2));
-                    //     setSubmitting(false);
-                    // }, 4000);
+                    setTimeout(() => {
+                        alert(JSON.stringify(values, null, 2));
+                        setSubmitting(false);
+                    }, 4000);
                 }}
                 initialValues={{
-                    email: "2012srv@gmail.com",
-                    password: "2012srv",
+                    name: "",
+                    email: "",
+                    password: "",
+                    passwordConfirmation: "",
                     terms: false,
                 }}
             >
                 {({ handleSubmit, handleChange, values, touched, errors, isSubmitting }) => (
                     <Form noValidate onSubmit={handleSubmit}>
+                        <Form.Group md="" controlId="validationFormik05">
+                            <Form.Label className='mb-1'>Name</Form.Label>
+                            <InputGroup>
+                                <InputGroup.Text>
+                                    <FontAwesomeIcon icon={faUser} />
+                                </InputGroup.Text>
+                                <Form.Control
+                                    type="text"
+                                    name="name"
+                                    placeholder="Full name"
+                                    value={values.name}
+                                    onChange={(e) => handleChange(e)}
+                                    isValid={touched.name && !errors.name}
+                                    isInvalid={!!errors.name}
+                                />
+                            </InputGroup>
+                            {/* <Form.Control.Feedback type="invalid">
+                                {errors.name}
+                            </Form.Control.Feedback> */}
+                        </Form.Group>
                         <Form.Group md="" controlId="validationFormik01">
                             <Form.Label className='mb-1'>Email address</Form.Label>
                             <InputGroup>
@@ -57,7 +77,7 @@ const Login = (props) => {
                                 <Form.Control
                                     type="email"
                                     name="email"
-                                    placeholder="Registered email address"
+                                    placeholder="Email address"
                                     value={values.email}
                                     onChange={(e) => handleChange(e)}
                                     isValid={touched.email && !errors.email}
@@ -88,7 +108,27 @@ const Login = (props) => {
                                 {errors.password}
                             </Form.Control.Feedback> */}
                         </Form.Group>
-                        {/* <Form.Group className="pt-2">
+                        <Form.Group controlId="validationFormik03" className="pt-2">
+                            <Form.Label className='mb-1'>Confirm Password</Form.Label>
+                            <InputGroup>
+                                <InputGroup.Text>
+                                    <FontAwesomeIcon icon={faLock} />
+                                </InputGroup.Text>
+                                <Form.Control
+                                    type="password"
+                                    name="passwordConfirmation"
+                                    placeholder="Confirm Password"
+                                    value={values.passwordConfirmation}
+                                    onChange={handleChange}
+                                    isInvalid={!!errors.passwordConfirmation}
+                                    isValid={touched.passwordConfirmation && !errors.passwordConfirmation}
+                                />
+                            </InputGroup>
+                            {/* <Form.Control.Feedback type="invalid">
+                                {errors.passwordConfirmation}
+                            </Form.Control.Feedback> */}
+                        </Form.Group>
+                        <Form.Group className="pt-2">
                             <Form.Check
                                 required
                                 name="terms"
@@ -98,9 +138,8 @@ const Login = (props) => {
                                 feedback={errors.terms}
                                 id="validationFormik0"
                             />
-                        </Form.Group> */}
-                        {error && <p>gfdgfdg</p>}
-                        <Button size="lg" type="submit" disabled={isFetching} className="mt-3">Login</Button>
+                        </Form.Group>
+                        <Button size="lg" type="submit" disabled={isSubmitting} className="mt-3">Sign Up</Button>
                     </Form>
                 )}
             </Formik>
@@ -108,4 +147,4 @@ const Login = (props) => {
     )
 }
 
-export default Login;
+export default Register;

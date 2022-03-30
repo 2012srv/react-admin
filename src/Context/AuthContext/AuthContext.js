@@ -5,6 +5,7 @@ const INITIAL_STATE = {
     user: JSON.parse(localStorage.getItem("user")) || null,
     isFetching: false,
     error: false,
+    theme: localStorage.getItem("theme") || 'light'
 };
 
 export const AuthContext = createContext(INITIAL_STATE);
@@ -16,12 +17,17 @@ export const AuthContextProvider = ({ children }) => {
         localStorage.setItem("user", JSON.stringify(state.user));
     }, [state.user]);
 
+    useEffect(() => {
+        localStorage.setItem("theme", state.theme);
+    }, [state.theme]);
+
     return (
         <AuthContext.Provider
             value={{
                 user: state.user,
                 isFetching: state.isFetching,
                 error: state.error,
+                theme: state.theme,
                 dispatch,
             }}
         >

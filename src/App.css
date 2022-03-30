@@ -2,7 +2,19 @@
   text-align: center;
 }
 
-.App-logo {
+
+.wrapper{
+  height: 100%;
+  background-color: #ccc;
+  min-height: 100vh;
+}
+
+.login-wrapper{
+  background-color: #fff;
+  width: 450px;
+}
+
+/* .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
@@ -11,4 +23,4 @@
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
-}
+} */

@@ -1,22 +1,36 @@
-import axios from "axios";
-import { loginFailure, loginStart, loginSuccess, logout } from "./AuthActions";
+import { loginFailure, loginStart, loginSuccess, logOut, changeTheme } from "./AuthActions";
 
-export const login = async (user, dispatch) => {
+export const login = async (user, dispatch, axios) => {
     dispatch(loginStart());
     try {
         const res = await axios.post("auth/login", user);
-        dispatch(loginSuccess(res.data));
+        const { accessToken, refreshToken, ...rest } = res.data;
+        localStorage.setItem('token', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
+        dispatch(loginSuccess(rest));
     } catch (err) {
         dispatch(loginFailure());
     }
 };
 
-export const logOut = async (user, dispatch) => {
-    dispatch(logout());
+export const logOff = async (dispatch, axios) => {
+    const refreshToken = localStorage.getItem('refreshToken');
+    dispatch(logOut());
     try {
-        const res = await axios.post("auth/logout", { token: user.token });
+        await axios.post("auth/logout", { token: refreshToken });
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
         // console.log(err);
     } catch (err) {
         console.log(err);
     }
+};
+
+export const themeChange = (theme, dispatch) => {
+    dispatch(changeTheme(theme));
+    // try {
+    //     const res = await axios.post("auth/logout", { token: user.token });
+    // } catch (err) {
+    //     console.log(err);
+    // }
 };

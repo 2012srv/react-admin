@@ -1,43 +1,55 @@
-import React, { useEffect, Suspense } from 'react';
+import React, { useEffect, Suspense, useContext } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
+import { AuthContext } from './context/authContext/AuthContext';
+
 import Login from './containers/Login/Login';
-import withRouter from './HOC/withRouter/withRouter';
+import Register from './containers/Register/Register';
 
-const App = (props) => {
+import Layout from './containers/Layout/Layout';
+import Dashboard from './containers/Dashboard/Dashboard';
 
+import { withErrorHandler } from './hoc/withErrorHandler';
+// import withRouter from './hoc/withRouter';
+
+const App = () => {
+  const { user, dispatch } = useContext(AuthContext);
   let routes = (
-    <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="*" element={<Navigate replace to="/" />} />
-    </Routes>
+    <div className='wrapper d-flex flex-column justify-content-center align-items-center'>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Register />} />
+        <Route path="*" element={<Navigate replace to="/login" />} />
+      </Routes>
+    </div>
   );
 
-  if (props.isAuthenticated) {
+  if (user) {
     routes = (
-      <Routes>
-        {/* <Route path="/checkout" render={props => <Checkout {...props} />} />
-        <Route path="/orders" render={props => <Orders {...props} />} />
-        <Route path="/logout" component={Logout} />
-        <Route path="/auth" render={props => <Auth {...props} />} />
-        <Route path="/" exact component={BurgerBuilder} /> */}
-        {/* <Redirect to="/" /> */}
-      </Routes>
+      <Layout>
+        <div className='p-3'>
+          <Routes>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="*" element={<Navigate replace to="/dashboard" />} />
+          </Routes>
+        </div>
+      </Layout>
     );
   }
 
   return (
-    <div>
+    <>
       {routes}
       {/* <Suspense fallback={<p>Loading...</p>}>{routes}</Suspense> */}
       {/* <Layout>
         <Suspense fallback={<p>Loading...</p>}>{routes}</Suspense>
       </Layout> */}
-    </div>
+    </>
   );
 }
 
-export default withRouter(App);
+export default withErrorHandler(App);
+// export default withRouter(App);
