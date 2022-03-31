@@ -1,38 +1,47 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
 
 import Logo from '../../components/Logo/Logo';
-import classes from './Sidebar.module.css';
+import Menus from "../../components/Menus/Menus";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDashboard, faReceipt, faRectangleXmark, faRectangleList } from '@fortawesome/free-solid-svg-icons';
 
+const allMenus = [
+    { name: 'Dashboard', icon: faDashboard, to: '/dashboard', link: true },
+    {
+        name: 'Category 1',
+        link: false,
+        subLinks: [
+            { name: 'Link 1', icon: faReceipt, to: '/link', link: true },
+            { name: 'Link 2', icon: faRectangleXmark, to: '/link', link: true },
+            { name: 'Link 3', icon: faRectangleList, to: '/link', link: true },
+            { name: 'Link 4', icon: faReceipt, to: '/link', link: true },
+        ]
+    },
+]
+
 const Sidebar = (props) => {
-    const assignedClasses = [classes.Menu];
+    const assignedClasses = ['Menu'];
     if (props.collapsed) {
-        assignedClasses.push(classes.Collapsed);
+        assignedClasses.push('Collapsed');
     }
     if (props.hoverable) {
-        assignedClasses.push(classes.Hoverable);
+        assignedClasses.push('Hoverable');
     }
+
     console.log('sidebar');
     return (
         <aside className={assignedClasses.join(' ')}>
-            <Logo collapsed={props.collapsed} />
-            <button onClick={props.toggle}>toggle</button>
-            <ul className={classes.Nav}>
-                <li><NavLink to="/dashboard" className='d-flex align-items-center'><span className={classes.IconHolder}><FontAwesomeIcon icon={faDashboard} /></span>Dashboard</NavLink></li>
-                <li>
-                    <span>Category 1</span>
-                    <ul>
-                        <li><NavLink to="/link" className='d-flex align-items-center'><span className={classes.IconHolder}><FontAwesomeIcon icon={faReceipt} /></span>Link 1</NavLink></li>
-                        <li><NavLink to="/link" className='d-flex align-items-center'><span className={classes.IconHolder}><FontAwesomeIcon icon={faRectangleXmark} /></span>Link 2</NavLink></li>
-                        <li><NavLink to="/link" className='d-flex align-items-center'><span className={classes.IconHolder}><FontAwesomeIcon icon={faRectangleList} /></span>Link 3</NavLink></li>
-                    </ul>
-                </li>
+            <div className="d-flex">
+                <Logo collapsed={props.collapsed} />
+                <FontAwesomeIcon icon="fa-solid fa-coffee" size="xs" />
+                <button className="Toggle" onClick={props.toggle}>toggle</button>
+            </div>
 
-            </ul>
-        </aside>
+            <div className="py-2">
+                <Menus menus={allMenus} />
+            </div>
+        </aside >
     )
 }
 

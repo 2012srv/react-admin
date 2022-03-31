@@ -1,5 +1,10 @@
 .Logo{
-
+    margin: 20px 10px;
+    display: block;
+}
+.Logo img{
+    width: 40px;
+    height: auto;
 }
 .Collapsed{
     

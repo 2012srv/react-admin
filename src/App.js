@@ -16,7 +16,7 @@ import { withErrorHandler } from './hoc/withErrorHandler';
 // import withRouter from './hoc/withRouter';
 
 const App = () => {
-  const { user, dispatch } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   let routes = (
     <div className='wrapper d-flex flex-column justify-content-center align-items-center'>
       <Routes>

@@ -8,7 +8,7 @@ import { logOut } from "../context/authContext/AuthActions";
 
 import axios from 'axios';
 import jwt_decode from "jwt-decode";
-console.log(process.env.REACT_APP_BASE_URL);
+
 export const axiosAuth = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,
 });
@@ -88,9 +88,7 @@ export const withErrorHandler = (WrappedComponent) => {
                         </Button>
                     </Modal.Footer>
                 </Modal>
-
                 {useMemo(() => <WrappedComponent {...props} />, [props])};
-
             </>
         );
     };

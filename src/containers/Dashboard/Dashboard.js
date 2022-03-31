@@ -6,14 +6,17 @@ const Dashboard = (props) => {
     const { user } = useContext(AuthContext);
     console.log('dashboard');
 
+    const fetchData = async () => {
+        try {
+            const res = await axiosAuth.get('users/find/62413a87c9ad66b525490bf3');
+            console.log(res.data);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     useEffect(() => {
-
-        axiosAuth.get('users/find/61dbe5cd6193b7f393dd3bc2').then(data => {
-            console.log(data);
-        }).catch((err) => {
-            // console.log(err);
-        });
-
+        // fetchData();
     }, []);
 
     return (
