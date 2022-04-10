@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Menus = props => {
-    const navLinkClasses = ['Navlink', 'd-flex', 'align-items-center'];
+    const navLinkClasses = ['Navlink', 'd-flex', 'align-items-center', 'ripple'];
 
     const assignedClasses = ['Nav', 'mb-0'];
 
@@ -24,7 +24,7 @@ const Menus = props => {
                                 <span className={'Text'}>{item.name}</span>
                             </NavLink>
                         </li> : <li key={index + '-' + item.name}>
-                            <span className={'Category' + ' d-flex align-items-center pt-2'}>{item.name}</span>
+                            <span className='Category d-flex align-items-center pt-2'>{item.name}</span>
                             <ul className="mb-0">
                                 <Menus menus={item.subLinks} />
                             </ul>

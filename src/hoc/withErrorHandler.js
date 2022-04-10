@@ -88,7 +88,7 @@ export const withErrorHandler = (WrappedComponent) => {
                         </Button>
                     </Modal.Footer>
                 </Modal>
-                {useMemo(() => <WrappedComponent {...props} />, [props])};
+                {useMemo(() => <WrappedComponent {...props} />, [props])}
             </>
         );
     };

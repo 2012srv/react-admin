@@ -7,11 +7,11 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 
 import { axiosAuth } from '../../hoc/withErrorHandler';
 import * as api from '../../context/authContext/apiCalls';
 import { AuthContext } from '../../context/authContext/AuthContext';
+import { Link } from 'react-router-dom';
 
 // import withErrorHandler from '../../hoc/withErrorHandler';
 
@@ -33,12 +33,8 @@ const Login = (props) => {
         <div className="login-wrapper p-4 rounded-3">
             <Formik
                 validationSchema={schema}
-                onSubmit={(values, { setSubmitting }) => {
+                onSubmit={(values) => {
                     api.login(values, dispatch, axiosAuth);
-                    // setTimeout(() => {
-                    //     alert(JSON.stringify(values, null, 2));
-                    //     setSubmitting(false);
-                    // }, 4000);
                 }}
                 initialValues={{
                     email: "2012srv@gmail.com",
@@ -50,9 +46,9 @@ const Login = (props) => {
                     <Form noValidate onSubmit={handleSubmit}>
                         <Form.Group md="" controlId="validationFormik01">
                             <Form.Label className='mb-1'>Email address</Form.Label>
-                            <InputGroup>
+                            <InputGroup hasValidation>
                                 <InputGroup.Text>
-                                    <FontAwesomeIcon icon={faEnvelope} />
+                                    <FontAwesomeIcon icon={['far', 'envelope']} />
                                 </InputGroup.Text>
                                 <Form.Control
                                     type="email"
@@ -63,16 +59,17 @@ const Login = (props) => {
                                     isValid={touched.email && !errors.email}
                                     isInvalid={!!errors.email}
                                 />
+                                {/* <Form.Control.Feedback type="invalid">
+                                    {errors.email}
+                                </Form.Control.Feedback> */}
                             </InputGroup>
-                            {/* <Form.Control.Feedback type="invalid">
-                                {errors.email}
-                            </Form.Control.Feedback> */}
+
                         </Form.Group>
                         <Form.Group controlId="validationFormik02" className="pt-2">
                             <Form.Label className='mb-1'>Password</Form.Label>
-                            <InputGroup>
+                            <InputGroup hasValidation>
                                 <InputGroup.Text>
-                                    <FontAwesomeIcon icon={faLock} />
+                                    <FontAwesomeIcon icon={['fas', 'lock']} />
                                 </InputGroup.Text>
                                 <Form.Control
                                     type="password"
@@ -83,24 +80,19 @@ const Login = (props) => {
                                     isInvalid={!!errors.password}
                                     isValid={touched.password && !errors.password}
                                 />
+                                {/* <Form.Control.Feedback type="invalid">
+                                    {errors.password}
+                                </Form.Control.Feedback> */}
                             </InputGroup>
-                            {/* <Form.Control.Feedback type="invalid">
-                                {errors.password}
-                            </Form.Control.Feedback> */}
                         </Form.Group>
-                        {/* <Form.Group className="pt-2">
-                            <Form.Check
-                                required
-                                name="terms"
-                                label="Agree to terms and conditions"
-                                onChange={handleChange}
-                                isInvalid={!!errors.terms}
-                                feedback={errors.terms}
-                                id="validationFormik0"
-                            />
-                        </Form.Group> */}
-                        {error && <p>gfdgfdg</p>}
-                        <Button size="lg" type="submit" disabled={isFetching} className="mt-3">Login</Button>
+                        {error && <p className='mb-0 pt-2 text-danger'>{error.msg}</p>}
+                        <div className='d-flex pt-3'>
+                            <Button size="lg" type="submit" disabled={isFetching}>Login</Button>
+                            <div className='justify-content-center flex-column d-flex ps-3'>
+                                <Link to='/signup' className='py-1'>Register here</Link>
+                                <Link to='/signup' className='py-1'>Forgot password?</Link>
+                            </div>
+                        </div>
                     </Form>
                 )}
             </Formik>

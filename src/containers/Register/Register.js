@@ -1,24 +1,41 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import InputGroup from 'react-bootstrap/InputGroup'
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import { useNavigate } from "react-router-dom";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 
 import { axiosAuth } from '../../hoc/withErrorHandler';
+import { Link } from 'react-router-dom';
 
 const Register = () => {
+    const [error, setError] = useState(null);
+    let navigate = useNavigate();
     const schema = yup.object().shape({
-        name: yup.string().required(),
+        fullName: yup.string().required(),
+        phone: yup.number().required(),
         email: yup.string().email().required(),
         password: yup.string().required(),
         passwordConfirmation: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match'),
         terms: yup.bool().required().oneOf([true], "term must be accepted"),
     });
+
+    const onRegister = async (values, { setSubmitting }) => {
+        const { passwordConfirmation, terms, ...rest } = values;
+        setError(null);
+        try {
+            const res = await axiosAuth.post("auth/register", rest);
+            setSubmitting(false);
+            navigate("./login", { replace: true });
+        } catch (e) {
+            setSubmitting(false);
+            setError(e);
+        }
+    }
 
     useEffect(() => {
 
@@ -32,14 +49,10 @@ const Register = () => {
         <div className="login-wrapper p-4 rounded-3">
             <Formik
                 validationSchema={schema}
-                onSubmit={(values, { setSubmitting }) => {
-                    setTimeout(() => {
-                        alert(JSON.stringify(values, null, 2));
-                        setSubmitting(false);
-                    }, 4000);
-                }}
+                onSubmit={onRegister}
                 initialValues={{
-                    name: "",
+                    fullName: "",
+                    phone: "",
                     email: "",
                     password: "",
                     passwordConfirmation: "",
@@ -50,29 +63,49 @@ const Register = () => {
                     <Form noValidate onSubmit={handleSubmit}>
                         <Form.Group md="" controlId="validationFormik05">
                             <Form.Label className='mb-1'>Name</Form.Label>
-                            <InputGroup>
+                            <InputGroup hasValidation>
                                 <InputGroup.Text>
-                                    <FontAwesomeIcon icon={faUser} />
+                                    <FontAwesomeIcon icon={['far', 'user']} />
                                 </InputGroup.Text>
                                 <Form.Control
                                     type="text"
-                                    name="name"
+                                    name="fullName"
                                     placeholder="Full name"
-                                    value={values.name}
+                                    value={values.fullName}
                                     onChange={(e) => handleChange(e)}
-                                    isValid={touched.name && !errors.name}
-                                    isInvalid={!!errors.name}
+                                    isValid={touched.fullName && !errors.fullName}
+                                    isInvalid={!!errors.fullName}
                                 />
+                                {/* <Form.Control.Feedback type="invalid">
+                                    {errors.fullName}
+                                </Form.Control.Feedback> */}
                             </InputGroup>
-                            {/* <Form.Control.Feedback type="invalid">
-                                {errors.name}
-                            </Form.Control.Feedback> */}
                         </Form.Group>
-                        <Form.Group md="" controlId="validationFormik01">
-                            <Form.Label className='mb-1'>Email address</Form.Label>
-                            <InputGroup>
+                        <Form.Group md="" controlId="validationFormik06" className="pt-2">
+                            <Form.Label className='mb-1'>Mobile</Form.Label>
+                            <InputGroup hasValidation>
                                 <InputGroup.Text>
-                                    <FontAwesomeIcon icon={faEnvelope} />
+                                    <FontAwesomeIcon icon={['fas', 'mobile-screen-button']} />
+                                </InputGroup.Text>
+                                <Form.Control
+                                    type="text"
+                                    name="phone"
+                                    placeholder="Mobile no."
+                                    value={values.phone}
+                                    onChange={handleChange}
+                                    isValid={touched.phone && !errors.phone}
+                                    isInvalid={!!errors.phone}
+                                />
+                                {/* <Form.Control.Feedback type="invalid">
+                                    {errors.phone}
+                                </Form.Control.Feedback> */}
+                            </InputGroup>
+                        </Form.Group>
+                        <Form.Group md="" controlId="validationFormik01" className="pt-2">
+                            <Form.Label className='mb-1'>Email address</Form.Label>
+                            <InputGroup hasValidation>
+                                <InputGroup.Text>
+                                    <FontAwesomeIcon icon={['far', 'envelope']} />
                                 </InputGroup.Text>
                                 <Form.Control
                                     type="email"
@@ -83,16 +116,16 @@ const Register = () => {
                                     isValid={touched.email && !errors.email}
                                     isInvalid={!!errors.email}
                                 />
+                                {/* <Form.Control.Feedback type="invalid">
+                                    {errors.email}
+                                </Form.Control.Feedback> */}
                             </InputGroup>
-                            {/* <Form.Control.Feedback type="invalid">
-                                {errors.email}
-                            </Form.Control.Feedback> */}
                         </Form.Group>
                         <Form.Group controlId="validationFormik02" className="pt-2">
                             <Form.Label className='mb-1'>Password</Form.Label>
-                            <InputGroup>
+                            <InputGroup hasValidation>
                                 <InputGroup.Text>
-                                    <FontAwesomeIcon icon={faLock} />
+                                    <FontAwesomeIcon icon={['fas', 'lock']} />
                                 </InputGroup.Text>
                                 <Form.Control
                                     type="password"
@@ -103,16 +136,16 @@ const Register = () => {
                                     isInvalid={!!errors.password}
                                     isValid={touched.password && !errors.password}
                                 />
+                                {/* <Form.Control.Feedback type="invalid">
+                                    {errors.password}
+                                </Form.Control.Feedback> */}
                             </InputGroup>
-                            {/* <Form.Control.Feedback type="invalid">
-                                {errors.password}
-                            </Form.Control.Feedback> */}
                         </Form.Group>
                         <Form.Group controlId="validationFormik03" className="pt-2">
                             <Form.Label className='mb-1'>Confirm Password</Form.Label>
-                            <InputGroup>
+                            <InputGroup hasValidation>
                                 <InputGroup.Text>
-                                    <FontAwesomeIcon icon={faLock} />
+                                    <FontAwesomeIcon icon={['fas', 'lock']} />
                                 </InputGroup.Text>
                                 <Form.Control
                                     type="password"
@@ -123,12 +156,13 @@ const Register = () => {
                                     isInvalid={!!errors.passwordConfirmation}
                                     isValid={touched.passwordConfirmation && !errors.passwordConfirmation}
                                 />
+                                {/* <Form.Control.Feedback type="invalid">
+                                    {errors.passwordConfirmation}
+                                </Form.Control.Feedback> */}
                             </InputGroup>
-                            {/* <Form.Control.Feedback type="invalid">
-                                {errors.passwordConfirmation}
-                            </Form.Control.Feedback> */}
+
                         </Form.Group>
-                        <Form.Group className="pt-2">
+                        <Form.Group className="pt-3">
                             <Form.Check
                                 required
                                 name="terms"
@@ -139,7 +173,16 @@ const Register = () => {
                                 id="validationFormik0"
                             />
                         </Form.Group>
-                        <Button size="lg" type="submit" disabled={isSubmitting} className="mt-3">Sign Up</Button>
+                        {error && <p className='mb-0 pt-2 text-danger'>{error.msg}</p>}
+                        <div className='d-flex pt-2'>
+                            <Button size="lg" type="submit" disabled={isSubmitting}>
+                                {isSubmitting && <FontAwesomeIcon icon={['fas', 'spinner']} spin size='xs' className='me-2' />}
+                                Sign Up
+                            </Button>
+                            <div className='justify-content-center flex-column d-flex ps-3'>
+                                <Link to='/login'>Login here</Link>
+                            </div>
+                        </div>
                     </Form>
                 )}
             </Formik>

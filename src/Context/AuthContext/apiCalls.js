@@ -9,7 +9,7 @@ export const login = async (user, dispatch, axios) => {
         localStorage.setItem('refreshToken', refreshToken);
         dispatch(loginSuccess(rest));
     } catch (err) {
-        dispatch(loginFailure());
+        dispatch(loginFailure(err));
     }
 };
 
@@ -22,6 +22,8 @@ export const logOff = async (dispatch, axios) => {
         localStorage.removeItem('refreshToken');
         // console.log(err);
     } catch (err) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
         console.log(err);
     }
 };

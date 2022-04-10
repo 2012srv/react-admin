@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 
 import Sidebar from '../../containers/Sidebar/Sidebar';
 import Header from '../../containers/Header/Header';
-import classes from './Layout.module.css';
+import classes from './Layout.module.scss';
 
 const Layout = (props) => {
     const [menuCollapsed, setMenuCollapsed] = useState(false);
@@ -18,7 +18,7 @@ const Layout = (props) => {
     }
 
     const assignedClasses = [classes.Main];
-    if (props.collapsed) {
+    if (menuCollapsed) {
         assignedClasses.push(classes.Collapsed);
     }
 
