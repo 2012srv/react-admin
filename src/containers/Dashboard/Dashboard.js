@@ -8,7 +8,7 @@ const Dashboard = (props) => {
 
     const fetchData = async () => {
         try {
-            const res = await axiosAuth.get('users/find/62413a87c9ad66b525490bf3');
+            const res = await Promise.all([axiosAuth.get('users/find/62413a87c9ad66b525490bf3'), axiosAuth.get('users/find/62413a87c9ad66b525490bf3')]);
             console.log(res.data);
         } catch (e) {
             console.log(e);
@@ -22,6 +22,7 @@ const Dashboard = (props) => {
     return (
         <div>
             Dashboard
+            <button onClick={() => fetchData()}>Run</button>
         </div>
     )
 }

@@ -7,71 +7,89 @@ import { AuthContext } from '../context/authContext/AuthContext';
 import { logOut } from "../context/authContext/AuthActions";
 
 import axios from 'axios';
-import jwt_decode from "jwt-decode";
+
+export const axiosBase = axios.create({
+    baseURL: process.env.REACT_APP_BASE_URL,
+});
 
 export const axiosAuth = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,
 });
 
+let isAlreadyFetchingAccessToken = false;
+let subscribers = [];
+
+axiosAuth.interceptors.request.use(req => {
+    const accessToken = localStorage.getItem('token');
+    req.headers.token = 'Bearer ' + accessToken;
+    return req;
+});
+axiosAuth.interceptors.response.use(response => {
+    return response;
+}, (error) => {
+    // console.log(1);
+    const { config, response: { status } } = error;
+    const originalRequest = config;
+
+    if (status === 401) {
+        if (!isAlreadyFetchingAccessToken) {
+            const refreshToken = localStorage.getItem('refreshToken');
+            isAlreadyFetchingAccessToken = true;
+            axios.post(process.env.REACT_APP_BASE_URL + "auth/refresh", { token: refreshToken }).then((res) => {
+                isAlreadyFetchingAccessToken = false;
+                localStorage.setItem('token', res.data.accessToken);
+                onAccessTokenFetched(res.data.accessToken);
+            });
+        }
+        const retryOriginalRequest = new Promise((resolve) => {
+            addSubscriber(token => {
+                originalRequest.headers.token = 'Bearer ' + token;
+                resolve(axiosAuth(originalRequest));
+            })
+        })
+        return retryOriginalRequest
+    }
+    return Promise.reject(error)
+});
+
+function onAccessTokenFetched(token) {
+    subscribers = subscribers.filter(callback => callback(token))
+}
+function addSubscriber(callback) {
+    subscribers.push(callback)
+}
+
+
+// HOC
 export const withErrorHandler = (WrappedComponent) => {
     return props => {
         const [error, setError] = useState(null);
         const { dispatch, user } = useContext(AuthContext);
 
-        const reqInterceptor = axiosAuth.interceptors.request.use(
-            async (req) => {
-                setError(null);
-                const accessToken = localStorage.getItem('token');
-                const refreshToken = localStorage.getItem('refreshToken');
-                // console.log(refreshToken);
-                if (accessToken) {
-                    const offsetTime = 2000;
-                    let currentDate = Date.now() + offsetTime;
-                    const decodedToken = jwt_decode(accessToken);
-                    // console.log(decodedToken.exp * 1000);
-                    if (decodedToken.exp * 1000 < currentDate) {
-                        try {
-                            const res = await axios.post(process.env.REACT_APP_BASE_URL + "auth/refresh", { token: refreshToken });
-                            localStorage.setItem('token', res.data.accessToken);
-                            req['headers']["token"] = "Bearer " + res.data.accessToken;
-                        } catch (err) {
-                            return Promise.reject(err);
-                        }
-
-                    } else {
-                        req['headers']["token"] = 'Bearer ' + accessToken;
-                    }
-                }
-                return req;
-            }
-        );
-
         const resInterceptor = axiosAuth.interceptors.response.use(
             res => {
                 return res;
             },
-            err => {
-                const error = err.response ? err.response.data : err;
-                setError(error);
-                return Promise.reject(error);
+            error => {
+                // console.log(2);
+                const errorData = error.response ? error.response.data : error;
+                setError(errorData);
+                return Promise.reject(errorData);
             }
         );
 
         useEffect(() => {
             return () => {
-                axiosAuth.interceptors.request.eject(reqInterceptor);
                 axiosAuth.interceptors.response.eject(resInterceptor);
             };
-        }, [reqInterceptor, resInterceptor]);
+        }, [resInterceptor]);
 
         const errorConfirmedHandler = () => {
+            setError(null);
             if (error.status === 403) {
-                setError(null);
                 localStorage.removeItem('token');
                 localStorage.removeItem('refreshToken');
                 dispatch(logOut());
-            } else {
-                setError(null);
             }
         };
 

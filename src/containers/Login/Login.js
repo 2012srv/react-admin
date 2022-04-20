@@ -8,7 +8,7 @@ import * as yup from 'yup';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { axiosAuth } from '../../hoc/withErrorHandler';
+import { axiosBase } from '../../hoc/withErrorHandler';
 import * as api from '../../context/authContext/apiCalls';
 import { AuthContext } from '../../context/authContext/AuthContext';
 import { Link } from 'react-router-dom';
@@ -34,7 +34,7 @@ const Login = (props) => {
             <Formik
                 validationSchema={schema}
                 onSubmit={(values) => {
-                    api.login(values, dispatch, axiosAuth);
+                    api.login(values, dispatch, axiosBase);
                 }}
                 initialValues={{
                     email: "2012srv@gmail.com",
@@ -59,9 +59,9 @@ const Login = (props) => {
                                     isValid={touched.email && !errors.email}
                                     isInvalid={!!errors.email}
                                 />
-                                {/* <Form.Control.Feedback type="invalid">
+                                <Form.Control.Feedback tooltip type="invalid">
                                     {errors.email}
-                                </Form.Control.Feedback> */}
+                                </Form.Control.Feedback>
                             </InputGroup>
 
                         </Form.Group>
@@ -80,9 +80,9 @@ const Login = (props) => {
                                     isInvalid={!!errors.password}
                                     isValid={touched.password && !errors.password}
                                 />
-                                {/* <Form.Control.Feedback type="invalid">
+                                <Form.Control.Feedback tooltip type="invalid">
                                     {errors.password}
-                                </Form.Control.Feedback> */}
+                                </Form.Control.Feedback>
                             </InputGroup>
                         </Form.Group>
                         {error && <p className='mb-0 pt-2 text-danger'>{error.msg}</p>}
