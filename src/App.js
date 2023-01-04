@@ -17,6 +17,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faTwitter, faMagento } from '@fortawesome/free-brands-svg-icons';
 import { faAngleDown, faAnglesRight, faBars, faBarsStaggered, faLayerGroup, faLock, faMobileScreenButton, faPager, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { faAddressBook, faBarChart, faEnvelope, faUser } from '@fortawesome/free-regular-svg-icons';
+
 // import withRouter from './hoc/withRouter';
 
 library.add(faPager, faUser, faSpinner, faMobileScreenButton, faAngleDown, faLock, faEnvelope, faTwitter, faBars, faBarsStaggered, faLayerGroup, faMagento, faAnglesRight, faAddressBook, faBarChart);
